@@ -57,6 +57,10 @@ import hscript.Expr;
 import Discord;
 #end
 
+#if android
+import android.Hardware;
+#end
+
 using StringTools;
 
 class FunkinLua {
@@ -91,7 +95,7 @@ class FunkinLua {
 			var resultStr:String = Lua.tostring(lua, result);
 			if(resultStr != null && result != 0) {
 				trace('Error on lua script! ' + resultStr);
-				#if windows
+				#if (windows ||android)
 				lime.app.Application.current.window.alert(resultStr, 'Error on lua script!');
 				#else
 				luaTrace('Error loading lua script: "$script"\n' + resultStr, true, false, FlxColor.RED);
@@ -253,11 +257,11 @@ class FunkinLua {
 		});
 
 		// shader shit
-		Lua_helper.add_callback(lua, "initLuaShader", function(name:String, glslVersion:Int = 120) {
+		Lua_helper.add_callback(lua, "initLuaShader", function(name:String) {
 			if(!ClientPrefs.shaders) return false;
 
 			#if (!flash && MODS_ALLOWED && sys)
-			return initLuaShader(name, glslVersion);
+			return initLuaShader(name);
 			#else
 			luaTrace("initLuaShader: Platform unsupported for Runtime Shaders!", false, false, FlxColor.RED);
 			#end
@@ -2891,7 +2895,7 @@ class FunkinLua {
 	}
 	#end
 	
-	function initLuaShader(name:String, ?glslVersion:Int = 120)
+	function initLuaShader(name:String)
 	{
 		if(!ClientPrefs.shaders) return false;
 
@@ -2902,7 +2906,7 @@ class FunkinLua {
 			return true;
 		}
 
-		var foldersToCheck:Array<String> = [Paths.mods('shaders/')];
+		var foldersToCheck:Array<String> = [SUtil.getPath() + Paths.getPreloadPath('shaders/')];
 		if(Paths.currentModDirectory != null && Paths.currentModDirectory.length > 0)
 			foldersToCheck.insert(0, Paths.mods(Paths.currentModDirectory + '/shaders/'));
 

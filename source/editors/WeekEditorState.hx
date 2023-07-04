@@ -547,7 +547,7 @@ class WeekEditorState extends MusicBeatState
 		var data:String = Json.stringify(weekFile, "\t");
 		if (data.length > 0)
 		{
-                        #if android
+            #if android
 			SUtil.saveContent(weekFileName, ".json", data);
 			#else
 			_file = new FileReference();
@@ -620,7 +620,7 @@ class WeekEditorFreeplayState extends MusicBeatState
 
 		for (i in 0...weekFile.songs.length)
 		{
-			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, weekFile.songs[i][0], true);
+			var songText:Alphabet = new Alphabet(90, 320, weekFile.songs[i][0], true);
 			songText.isMenuItem = true;
 			songText.targetY = i;
 			grpSongs.add(songText);
@@ -641,9 +641,9 @@ class WeekEditorFreeplayState extends MusicBeatState
 		addEditorBox();
 		changeSelection();
 
-                #if android
-                addVirtualPad(UP_DOWN, NONE);
-                #end
+        #if android
+        addVirtualPad(UP_DOWN, NONE);
+        #end
 
 		super.create();
 	}

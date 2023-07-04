@@ -161,9 +161,8 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		changeSelection();
 		reloadCheckboxes();
 
-                #if android
-		addVirtualPad(LEFT_FULL, A_B_C);
-		addVirtualPadCamera();
+        #if android
+		addVirtualPad(FULL, A_B_C);
 		#end
 	}
 
@@ -182,7 +181,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		}
 
 		if (controls.BACK) {
-                        #if android
+            #if android
 			flixel.addons.transition.FlxTransitionableState.skipNextTransOut = true;
 			FlxG.resetState();
 			#else
@@ -300,7 +299,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 				}
 			}
 
-			if(controls.RESET)
+			if(controls.RESET #if android || _virtualpad.buttonC.justPressed #end)
 			{
 				for (i in 0...optionsArray.length)
 				{

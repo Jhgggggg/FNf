@@ -18,11 +18,9 @@ import flixel.FlxState;
 import flixel.FlxCamera;
 import flixel.FlxBasic;
 #if mobile
+import flixel.input.actions.FlxActionInput;
 import android.flixel.FlxHitbox;
 import android.flixel.FlxVirtualPad;
-import flixel.FlxCamera;
-import flixel.input.actions.FlxActionInput;
-import flixel.util.FlxDestroyUtil;
 #end
 
 class MusicBeatState extends FlxUIState
@@ -40,39 +38,42 @@ class MusicBeatState extends FlxUIState
 	public static var camBeat:FlxCamera;
 
 	inline function get_controls():Controls
-		return PlayerSettings.player1.controls;
+	return PlayerSettings.player1.controls;
 
-        #if mobile
+	#if mobile
+	var _virtualpad:FlxVirtualPad;
 	var _hitbox:FlxHitbox;
-	var virtualPad:FlxVirtualPad;
-	var trackedInputsHitbox:Array<FlxActionInput> = [];
-	var trackedInputsVirtualPad:Array<FlxActionInput> = [];
+	var trackedinputsUI:Array<FlxActionInput> = [];
+	var trackedinputsNOTES:Array<FlxActionInput> = [];
+	#end
 
-	public function addVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode, ?visible = true):Void
-	{
-		if (virtualPad != null)
-			removeVirtualPad();
-
-		virtualPad = new FlxVirtualPad(DPad, Action);
-		virtualPad.visible = visible;
-		add(virtualPad);
-
-		controls.setVirtualPadUI(virtualPad, DPad, Action);
-		trackedInputsVirtualPad = controls.trackedInputsUI;
-		controls.trackedInputsUI = [];
+	#if mobile
+	public function addVirtualPad(?DPad:FlxDPadMode, ?Action:FlxActionMode) {
+        _virtualpad = new FlxVirtualPad(DPad, Action, 0.75, ClientPrefs.globalAntialiasing);
+		add(_virtualpad);
+		controls.setVirtualPadUI(_virtualpad, DPad, Action);
+		trackedinputsUI = controls.trackedinputsUI;
+		controls.trackedinputsUI = [];
 	}
+	#end
 
-	public function addVirtualPadCamera(DefaultDrawTarget:Bool = true):Void
-	{
-		if (virtualPad != null)
-		{
-			var camControls:FlxCamera = new FlxCamera();
-			FlxG.cameras.add(camControls, DefaultDrawTarget);
-			camControls.bgColor.alpha = 0;
-			virtualPad.cameras = [camControls];
-		}
+    #if mobile
+    public function addVirtualPadCamera() {
+		var virtualpadcam = new flixel.FlxCamera();
+		virtualpadcam.bgColor.alpha = 0;
+		FlxG.cameras.add(virtualpadcam, false);
+		_virtualpad.cameras = [virtualpadcam];
+    }
+    #end
+
+	#if mobile
+	public function removeVirtualPad() {
+		controls.removeFlxInput(trackedinputsUI);
+		remove(_virtualpad);
 	}
-	
+	#end
+
+    #if mobile
 	public function addHitbox(mania:Int) {
 		var curhitbox:HitboxType = FOUR;
 
@@ -82,9 +83,9 @@ class MusicBeatState extends FlxUIState
 			case 1:
 				curhitbox = TWO;
 			case 2:
-				curhitbox = THREE;					
+				curhitbox = THREE;
 			case 3:
-				curhitbox = FOUR;	
+				curhitbox = FOUR;
 			case 4:
 				curhitbox = FIVE;
 			case 5:
@@ -112,48 +113,29 @@ class MusicBeatState extends FlxUIState
 			case 16:
 				curhitbox= SEVENTEEN;
 			case 17:
-				curhitbox = EIGHTEEN;									
+				curhitbox = EIGHTEEN;
 			default:
 				curhitbox = FOUR;
 		}
-
 		_hitbox = new FlxHitbox(curhitbox);
+
+		var hitboxcam = new flixel.FlxCamera();
+		hitboxcam.bgColor.alpha = 0;
+		FlxG.cameras.add(hitboxcam, false);
+		_hitbox.cameras = [hitboxcam];
 
 		_hitbox.visible = false;
 		add(_hitbox);
 	}
+    #end
 
-        public function addHitboxCamera(DefaultDrawTarget:Bool = false):Void
-	{
-		var camControls:FlxCamera = new FlxCamera();
-		camControls.bgColor.alpha = 0;
-		FlxG.cameras.add(camControls, DefaultDrawTarget);
-		_hitbox.cameras = [camControls];
-	}
-
-	public function removeVirtualPad():Void
-	{
-		if (trackedInputsVirtualPad.length > 0)
-			controls.removeVirtualControlsInput(trackedInputsVirtualPad);
-
-		if (virtualPad != null)
-			remove(virtualPad);
-	}
-        #end
-
-	override function destroy()
-	{
+	override function destroy() {
 		#if mobile
-		if (trackedInputsVirtualPad.length > 0)
-			controls.removeVirtualControlsInput(trackedInputsVirtualPad);
+		controls.removeFlxInput(trackedinputsUI);
+		controls.removeFlxInput(trackedinputsNOTES);
 		#end
 
 		super.destroy();
-
-		#if mobile
-		if (virtualPad != null)
-			virtualPad = FlxDestroyUtil.destroy(virtualPad);
-		#end
 	}
 
 	override function create() {

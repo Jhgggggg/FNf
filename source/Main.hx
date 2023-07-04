@@ -11,13 +11,16 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.display.StageScaleMode;
 
+#if desktop
+import Discord.DiscordClient;
+#end
+
 //crash handler stuff
 #if CRASH_HANDLER
 import lime.app.Application;
 import openfl.events.UncaughtErrorEvent;
 import haxe.CallStack;
 import haxe.io.Path;
-import Discord.DiscordClient;
 import sys.FileSystem;
 import sys.io.File;
 import sys.io.Process;
@@ -33,7 +36,7 @@ class Main extends Sprite
 	var zoom:Float = -1; // If -1, zoom is automatically calculated to fit the window dimensions.
 	var framerate:Int = 60; // How many frames per second the game should run at.
 	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
-	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
+	var startFullscreen:Bool = true; // Whether to start the game in fullscreen on desktop targets
 	public static var fpsVar:FPS;
 
 	// You can pretty much ignore everything from here on - your code should go in your states.
@@ -45,7 +48,7 @@ class Main extends Sprite
 
 	public function new()
 	{
-                SUtil.uncaughtErrorHandler();
+    SUtil.gameCrashCheck();
 
 		super();
 
@@ -85,7 +88,7 @@ class Main extends Sprite
 	
 		//ClientPrefs.loadDefaultKeys();
 
-                SUtil.check();
+        SUtil.doTheCheck();
 
 		addChild(new FlxGame(gameWidth, gameHeight, initialState, #if (flixel < "5.0.0") zoom, #end framerate, framerate, skipSplash, startFullscreen));
 
@@ -144,7 +147,9 @@ class Main extends Sprite
 		Sys.println("Crash dump saved in " + Path.normalize(path));
 
 		Application.current.window.alert(errMsg, "Error!");
+		#if desktop
 		DiscordClient.shutdown();
+		#end
 		Sys.exit(1);
 	}
 	#end
