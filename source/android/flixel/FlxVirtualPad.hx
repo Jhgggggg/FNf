@@ -177,7 +177,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 
 	public function createButton(x:Float, y:Float, width:Int, height:Int, frames:String, Color:Int = 0xFFFFFF):FlxButton {
 		var button = new FlxButton(x, y);
-		button.frames = FlxTileFrames.fromFrame(getFrames().getByName(frames), FlxPoint.get(width, height)));
+		button.frames = FlxTileFrames.fromFrame(getFrames().getByName(frames), FlxPoint.get(width, height));
 		button.resetSizeFromFrame();
 		button.solid = false;
 		button.immovable = true;
@@ -192,7 +192,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	}
 
 	public static function getFrames():FlxAtlasFrames {
-		return Paths.getPackerAtlas("androidcontrols/virtualpad");
+		return Paths.getPackerAtlas('androidcontrols/virtualpad');
 	}
 
 	override public function destroy():Void {
