@@ -48,7 +48,7 @@ class SUtil
 		{
 			Permissions.requestPermissions([PermissionsList.READ_EXTERNAL_STORAGE, PermissionsList.WRITE_EXTERNAL_STORAGE]);
 			SUtil.applicationAlert('Permissions', 'If you accepted the permissions you are all good!' + "\nIf you didn't then expect a crash"
-					+ 'Press Ok to see what happens');
+					+ '\nPress Ok to see what happens');
 		}
 
 		if (Permissions.getGrantedPermissions().contains(PermissionsList.READ_EXTERNAL_STORAGE) || Permissions.getGrantedPermissions().contains(PermissionsList.WRITE_EXTERNAL_STORAGE))
