@@ -13,7 +13,7 @@ class ClientPrefs {
 	public static var showFPS:Bool = true;
 	public static var flashing:Bool = true;
 	public static var globalAntialiasing:Bool = true;
-	public static var noteSplashes:Bool = true;
+	public static var noteSplashes:Bool = false;
 	public static var lowQuality:Bool = false;
 	public static var shaders:Bool = true;
 	public static var framerate:Int = 60;
@@ -33,7 +33,7 @@ class ClientPrefs {
 													[0, 0, 0], [0, 0, 0], 
 													[0, 0, 0], [0, 0, 0]]; // Fuck
 	public static var imagesPersist:Bool = false;
-	public static var ghostTapping:Bool = true;
+	public static var ghostTapping:Bool = false;
 	public static var timeBarType:String = 'Time Left';
 	public static var scoreZoom:Bool = true;
 	public static var noReset:Bool = false;
